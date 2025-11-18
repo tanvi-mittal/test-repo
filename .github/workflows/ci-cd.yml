@@ -52,8 +52,11 @@ jobs:
       # 6. Deploy to ECS
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        env:
+          ECS_SERVICE: dev-api-service
+          ECS_CLUSTER: DevCluster
         with:
           task-definition: ecs-task-def.json
-          service: ${{ secrets.ECS_SERVICE }}
-          cluster: ${{ secrets.ECS_CLUSTER }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
