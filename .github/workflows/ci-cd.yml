@@ -47,6 +47,7 @@ jobs:
       # 5. Render ECS task definition with new image
       - name: Fill in the new image ID in the ECS task definition
         run: |
+          ls -A
           sed -i "s|<IMAGE>|${{ env.image }}|g" ecs-task-def.json
 
       # 6. Deploy to ECS
