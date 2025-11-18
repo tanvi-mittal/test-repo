@@ -1,0 +1,34 @@
+{
+  "family": "dev-api",
+  "executionRoleArn": "arn:aws:iam::288761764400:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::288761764400:role/ecsTaskRole",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "container-api",
+      "image": "288761764400.dkr.ecr.ap-south-1.amazonaws.com/test-ecr@sha256:4854d01d2f2244244667b2886db1f1600ce600311419a6049fcf7d5ed54e0088",
+      "essential": true,
+      "cpu": 0,
+      "memory": 3072,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/dev-api",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "environment": []
+    }
+  ],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "3072",
+  "volumes": []
+}

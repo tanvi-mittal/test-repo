@@ -57,7 +57,7 @@ jobs:
           ECS_SERVICE: dev-api-service
           ECS_CLUSTER: DevCluster
         with:
-          task-definition: ecs-task-def.json
+          task-definition: task.json
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
