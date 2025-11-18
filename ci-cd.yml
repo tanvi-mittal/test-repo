@@ -10,9 +10,8 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      ECR_REGISTRY: production
-      ECR_REPOSITORY: my-app-repo
-      API_PORT: 5000
+      ECR_REGISTRY: 288761764400.dkr.ecr.ap-south-1.amazonaws.com
+      ECR_REPOSITORY: test-ecr
       AWS_REGION: ap-south-1
 
     steps:
