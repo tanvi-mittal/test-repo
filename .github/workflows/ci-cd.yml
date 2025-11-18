@@ -37,9 +37,12 @@ jobs:
         env:
           IMAGE_TAG: gists-api:latest
         run: |
-          docker build --platform=linux/amd64 -t $IMAGE_TAG .
-          docker push ${{ env.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}
-          echo "image=${{ env.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_ENV
+          IMAGE_TAG=gists-api-latest
+          IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+          echo "Building image ${IMAGE_URI}"
+          docker build --platform=linux/amd64 -t "${IMAGE_URI}" .
+          docker push "${IMAGE_URI}"
+          echo "image=${IMAGE_URI}" >> $GITHUB_ENV
 
       # 5. Render ECS task definition with new image
       - name: Fill in the new image ID in the ECS task definition
