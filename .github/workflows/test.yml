@@ -1,0 +1,38 @@
+name: CI/CD to Amazon ECS
+on:
+  push:
+    branch:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ununtu-latest
+    env:
+      ECR_REGISTRY: test
+
+    steps:
+      - name: check source code
+        uses: actions/checkout@v3
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with: 
+          aws-access-key: 
+          aws-secret-key:
+          aws-region:
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build docker image
+        run:
+          IMAGE_TAG=github_gist_api:latest
+          IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+          echo "Building Docker image ${IMAGE_URI}"
+          docker build --platform linux/amd64 -t "${IMAGE_URI}" .
+          docker push ${IMAGE_URI}
+
+
+    
+

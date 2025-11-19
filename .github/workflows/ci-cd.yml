@@ -1,4 +1,4 @@
-name: CI/CD to Amazon ECS
+name: TEST DOCKER IMAGE CI/CD to Amazon ECS
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
         env:
           IMAGE_TAG: gists-api:latest
         run: |
-          IMAGE_TAG=gists-api-latest
+          IMAGE_TAG=gists-api:latest
           IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
           echo "Building image ${IMAGE_URI}"
           docker build --platform=linux/amd64 -t "${IMAGE_URI}" .
