@@ -9,7 +9,9 @@ jobs:
   build-and-deploy:
     runs-on: ununtu-latest
     env:
-      ECR_REGISTRY: test
+      ECR_REGISTRY: 288761764400.dkr.ecr.ap-south-1.amazonaws.com
+      ECR_REPOSITORY: test-ecr
+      AWS_REGION: ap-south-1
 
     steps:
       - name: check source code
@@ -27,7 +29,7 @@ jobs:
 
       - name: Build docker image
         run:
-          IMAGE_TAG=github_gist_api:latest
+          IMAGE_TAG=github_gistapi_latest
           IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
           echo "Building Docker image ${IMAGE_URI}"
           docker build --platform linux/amd64 -t "${IMAGE_URI}" .
