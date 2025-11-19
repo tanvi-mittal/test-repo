@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gists-api
+  namespace: dev-local
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gists-api
+  template:
+    metadata:
+      labels:
+        app: gists-api
+    spec:
+      # If your Docker Hub repo is private, uncomment the next line and ensure the secret exists:
+      # imagePullSecrets: [{ name: dockerhub-cred }]
+      containers:
+        - name: gists-api
+          image: <IMAGE>   # <-- replaced by the workflow
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet: { path: /health, port: 8080 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /health, port: 8080 }
+            initialDelaySeconds: 15
+            periodSeconds: 20

@@ -1,0 +1,53 @@
+name: CI/CD to Local K8s (Self-Hosted, No Registry)
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-local:
+    runs-on: self-hosted  # Your local runner
+    env:
+      K8S_NAMESPACE: dev
+      DOCKER_IMAGE: gists-api
+      IMAGE_TAG: local-${{ github.sha }}
+      IMAGE_URI: gists-api:local-${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure kubectl context
+        shell: bash
+        run: |
+          kubectl config use-context docker-desktop
+          kubectl get nodes
+
+      - name: Build image locally
+        shell: bash
+        run: |
+          docker build --platform=linux/amd64 -t "${IMAGE_URI}" .
+
+      - name: Render manifests
+        shell: bash
+        run: |
+          mkdir -p out
+          cp -r k8s/* out/
+          # Replace <IMAGE> with local tag
+          sed -i.bak "s|<IMAGE>|${IMAGE_URI}|g" out/deployment.yaml
+
+      - name: Create namespace if needed
+        shell: bash
+        run: |
+          kubectl get ns "${K8S_NAMESPACE}" || kubectl create namespace "${K8S_NAMESPACE}"
+
+      - name: Apply manifests
+        shell: bash
+        run: |
+          kubectl apply -n "${K8S_NAMESPACE}" -f out/service.yaml
+          kubectl apply -n "${K8S_NAMESPACE}" -f out/deployment.yaml
+          kubectl rollout status -n "${K8S_NAMESPACE}" deploy/gists-api --timeout=120s
+
+      - name: Show service URL (NodePort)
+        shell: bash
+        run: |
+          kubectl get svc -n "${K8S_NAMESPACE}" gists-api -o wide
